@@ -37,4 +37,53 @@ describe("Task Service (Unit Tests)", () => {
     });
   });
 
+  describe("findById()", () => {
+    it("should return correct task by id", () => {
+      const created = taskService.create({ title: "Find me" });
+      const found = taskService.findById(created.id);
+
+      expect(found).toBeDefined();
+      expect(found.title).toBe("Find me");
+    });
+
+    it("should return undefined if task not found", () => {
+      expect(taskService.findById("invalid-id")).toBeUndefined();
+    });
+  });
+
+
+  describe("update()", () => {
+    it("should update existing task", () => {
+      const task = taskService.create({ title: "Old Title" });
+      const updated = taskService.update(task.id, { 
+        title: "New Title", 
+        priority: "high" 
+      });
+
+      expect(updated.title).toBe("New Title");
+      expect(updated.priority).toBe("high");
+    });
+
+    it("should return null if task not found", () => {
+      const result = taskService.update("invalid-id", { title: "X" });
+      expect(result).toBeNull();
+    });
+  });
+
+  describe("remove()", () => {
+    it("should delete task and return true", () => {
+      const task = taskService.create({ title: "Delete me" });
+      const result = taskService.remove(task.id);
+
+      expect(result).toBe(true);
+      expect(taskService.getAll().length).toBe(0);
+    });
+
+    it("should return false if task not found", () => {
+      expect(taskService.remove("invalid-id")).toBe(false);
+    });
+  });
+
 });
+
+
